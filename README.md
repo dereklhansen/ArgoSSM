@@ -1,6 +1,6 @@
 # ArgoSSM: A probabilistic model of ocean floats under ice 
 This repo implements the experiments in
-> Hansen, D. and Yarger, D. (2022). A probabilisic model of ocean floats under ice.
+> Hansen, D. and Yarger, D. (2022). A probabilistic model of ocean floats under ice.
 
 ## Datasets
 
