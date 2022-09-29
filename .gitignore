@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.nc
+~/.boxr-oauth
+**/.DS_Store
+.vscode
+code/.DS_Store
+**/.Rstyler

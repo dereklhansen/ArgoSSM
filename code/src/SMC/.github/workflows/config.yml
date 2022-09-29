@@ -1,0 +1,46 @@
+name: tests
+
+on:
+  push:
+    branches: ['main', 'master', 'releases/*']
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        julia-version: ['1.5.3']
+        julia-arch: [x64]
+        os: [ubuntu-latest]
+
+    steps:
+      - name: "Checkout repo"
+        uses: actions/checkout@v1.0.0
+      - name: Cache Julia install directory
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.julia
+          key: ${{ runner.os }}
+      - name: "Set up Julia"
+        uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.julia-version }}
+          arch: ${{ matrix.julia-arch }}
+      - run: julia --version
+      - run: julia --compile=min -O0 -e 'import InteractiveUtils; InteractiveUtils.versioninfo()'
+      - name: "Test Julia code format"
+        run: |
+          julia -e 'using Pkg; Pkg.add(name="JuliaFormatter", version="0.13"); using JuliaFormatter; using Test; @test format(".")'
+      - name: "Test Julia Package"
+        run: |
+          julia --project=. -e 'using Pkg; Pkg.build(verbose=true); Pkg.test(coverage=true)'
+      - name: "Process code coverage:"
+        run: |
+          julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; x=Codecov.process_folder();LCOV.writefile("lcov.info", x)'
+      - name: "Upload code coverage"
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./lcov.info
